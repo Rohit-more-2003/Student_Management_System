@@ -200,6 +200,58 @@ class SearchDialog(QDialog):
 class EditDialog(QDialog):
 	def __init__(self):
 		super().__init__()
+		self.setWindowTitle("Update Student Data")
+		self.setFixedWidth(300)
+		self.setFixedHeight(300)
+		
+		layout = QVBoxLayout()
+		
+		# Get the details of the student whose data is to be edited
+		index = main_window.table.currentRow()
+		name = main_window.table.item(index, 1).text()
+		course = main_window.table.item(index, 2).text()
+		mob = main_window.table.item(index, 3).text()
+		
+		# Get the id of the student
+		self.student_id = main_window.table.item(index,0).text()
+		
+		# Add student name widget
+		self.student_name = QLineEdit(name)
+		self.student_name.setPlaceholderText("Name")
+		layout.addWidget(self.student_name)
+		
+		# Add combo box of courses
+		self.course_name = QComboBox()
+		courses = ["Biology", "Maths", "Astronomy", "Physics", "Chemistry"]
+		self.course_name.addItems(courses)
+		self.course_name.setCurrentText(course)
+		layout.addWidget(self.course_name)
+		
+		# Add mobile widget
+		self.mobile = QLineEdit(mob)
+		self.mobile.setPlaceholderText("Mobile")
+		layout.addWidget(self.mobile)
+		
+		# Add a submit button
+		button = QPushButton("Register")
+		button.clicked.connect(self.update_student)
+		layout.addWidget(button)
+		
+		self.setLayout(layout)
+		
+	def update_student(self):
+		# Update the student data of selected student
+		connection = sqlite3.connect("database.db")
+		cursor = connection.cursor()
+		cursor.execute("UPDATE students SET name=?, course=?, mobile=? WHERE id=?",
+		               (self.student_name.text(), self.course_name.currentText(),
+		                self.mobile.text(), self.student_id))
+		connection.commit()
+		cursor.close()
+		connection.close()
+		
+		# Display the updated data
+		main_window.load_data()
 		
 
 class DeleteDialog(QDialog):
