@@ -1,6 +1,5 @@
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, \
-	QWidget, QGridLayout, QLineEdit, QPushButton, QMainWindow, QTableWidget, \
-	QTableWidgetItem, QDialog, QComboBox, QToolBar
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, QWidget, QGridLayout, QLineEdit, QPushButton, QMainWindow, QTableWidget, \
+	QTableWidgetItem, QDialog, QComboBox, QToolBar, QStatusBar
 
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import Qt
@@ -14,7 +13,7 @@ class MainWindow(QMainWindow):
 	def __init__(self):
 		super().__init__()
 		self.setWindowTitle("Student Management System")
-		self.setMinimumSize(800)
+		self.setMinimumSize(500, 500)
 		
 		file_menu_item = self.menuBar().addMenu("&File")
 		help_menu_item = self.menuBar().addMenu("&Help")
@@ -42,13 +41,38 @@ class MainWindow(QMainWindow):
 		self.table.verticalHeader().setVisible(False)
 		self.setCentralWidget(self.table)
 		
-		# Create a toolbar
+		# Create a toolbar and toolbar elements
 		toolbar = QToolBar()
 		self.addToolBar(toolbar)
 		
-		# Create toolbar elements
 		toolbar.addAction(add_student_action)
 		toolbar.addAction(search_action)
+		
+		# Create status bar and status bar elements
+		self.status_bar = QStatusBar()
+		self.setStatusBar(self.status_bar)
+		
+		# Detect if a cell of the table was chosen
+		self.table.cellClicked.connect(self.cell_clicked)
+	
+	def cell_clicked(self):
+		# Create status bar widgets
+		edit_button = QPushButton("Edit Record")
+		edit_button.clicked.connect(self.edit)
+		
+		delete_button = QPushButton("Delete Record")
+		delete_button.clicked.connect(self.delete)
+		
+		# If there are already status bar buttons present, we want to delete the previous ones
+		# so that buttons do not appear more than one time.
+		children = self.findChildren(QPushButton)
+		if children:
+			for child in children:
+				self.status_bar.removeWidget(child)
+		
+		# Add buttons to status bar
+		self.status_bar.addWidget(edit_button)
+		self.status_bar.addWidget(delete_button)
 	
 	def load_data(self):
 		connection = sqlite3.connect("database.db")
@@ -69,6 +93,14 @@ class MainWindow(QMainWindow):
 		
 	def search(self):
 		dialog = SearchDialog()
+		dialog.exec()
+		
+	def edit(self):
+		dialog = EditDialog()
+		dialog.exec()
+		
+	def delete(self):
+		dialog = DeleteDialog()
 		dialog.exec()
 
 
@@ -163,6 +195,17 @@ class SearchDialog(QDialog):
 			
 			cursor.close()
 			connection.close()
+			
+			
+class EditDialog(QDialog):
+	def __init__(self):
+		super().__init__()
+		
+
+class DeleteDialog(QDialog):
+	def __init__(self):
+		super().__init__()
+		
 
 
 if __name__ == "__main__":
