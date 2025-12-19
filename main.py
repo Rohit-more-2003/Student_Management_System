@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, \
-	QWidget, QGridLayout, QLineEdit, QPushButton, QMainWindow
+	QWidget, QGridLayout, QLineEdit, QPushButton, QMainWindow, QTableWidget
 
 from PyQt6.QtGui import QAction
 
@@ -23,7 +23,16 @@ class MainWindow(QMainWindow):
 		# Do this if and only if you do not see help menu
 		# about_action.setMenuRole(QAction.MenuRole.NoRole)
 	
+		# Create table to display student database
+		self.table = QTableWidget()
+		self.table.setColumnCount(4)
+		self.table.setHorizontalHeaderLabels((
+			"ID", "Name", "Course", "Mobile"
+		))
+		self.setCentralWidget(self.table)
 		
+	def load_data(self):
+		pass
 		
 
 if __name__ == "__main__":
