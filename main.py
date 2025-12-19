@@ -26,7 +26,9 @@ class MainWindow(QMainWindow):
 		
 		about_action = QAction("About", self)
 		help_menu_item.addAction(about_action)
-		# Do this if and only if you do not see help menu
+		about_action.triggered.connect(self.about)
+		
+		# Do this if and only if you do not see help menu (for macOS users)
 		# about_action.setMenuRole(QAction.MenuRole.NoRole)
 		
 		search_action = QAction(QIcon("icons/icons/search.png"), "Search", self)
@@ -103,6 +105,11 @@ class MainWindow(QMainWindow):
 	def delete(self):
 		dialog = DeleteDialog()
 		dialog.exec()
+	
+	
+	def about(self):
+			dialog = AboutDialog()
+			dialog.exec()
 
 
 class InsertDialog(QDialog):
@@ -297,6 +304,21 @@ class DeleteDialog(QDialog):
 		confirmation_widget.setWindowTitle("Success")
 		confirmation_widget.setText("The record was deleted successfully.")
 		confirmation_widget.exec()
+		
+		
+class AboutDialog(QMessageBox):
+	def __init__(self):
+		super().__init__()
+		
+		self.setWindowTitle("About")
+		
+		content = """
+This app was created to manage student database.
+Feel free to use this app.
+		"""
+		self.setText(content)
+		
+		
 		
 
 
