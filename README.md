@@ -43,14 +43,14 @@ Copy and paste the entire block below into your terminal to set up and run the p
 
 ```text
 # Clone the repository, setup environment, install dependencies, and run
-```
-git clone https://github.com/yourusername/student-management-system.git<br>
+git clone https://github.com/yourusername/student-management-system.git
 cd student-management-system
 
-python3 -m venv venv<br>
+python3 -m venv venv
 
-source venv/bin/activate<br>
+source venv/bin/activate
 pip install -r requirements.txt
+```
 
 ---
 
